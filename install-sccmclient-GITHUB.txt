@@ -1,0 +1,33 @@
+# Define the remote computer name
+$remoteComputers = Get-Content "C:\Users\install_client.txt"
+
+# Define the path to check on the remote computer and the local source file
+$remotePath = "C:\windows\ccmsetup"
+$localSourceFile = "D:\Program Files\Microsoft Configuration Manager\Client\ccmsetup.exe"
+
+# Create a script block to execute on the remote computer
+$scriptBlock = {
+    param ($remotePath)
+
+    # Check if the directory exists
+    if (-Not (Test-Path -Path $remotePath)) {
+        # Create the directory if it doesn't exist
+        New-Item -Path $remotePath -ItemType Directory
+    }
+
+    # Run the ccmsetup.exe installer
+    Start-Process -FilePath "$remotePath\ccmsetup.exe" -ArgumentList "/mp:[] smssitecode=[]" -Wait
+}
+
+foreach($computer in $remoteComputers){ 
+# Create a new session for the remote computer
+$session = New-PSSession -ComputerName $computer
+
+# Copy the ccmsetup.exe file to the remote session, overwriting if it exists
+Copy-Item -Path $localSourceFile -Destination "$remotePath\ccmsetup.exe" -ToSession $session -Force
+
+# Invoke the command on the remote computer
+Invoke-Command -Session $session -ScriptBlock $scriptBlock -ArgumentList $remotePath
+
+# Remove the session after the command has been executed
+Remove-PSSession -Session $session}

@@ -1,0 +1,12 @@
+$remotecomputer = "lus-pnina"
+
+$MYSESSION = New-PSSession -ComputerName $remotecomputer
+Copy-Item -ToSession $MYSESSION "D:\Program Files\Microsoft Configuration Manager\Client\ccmsetup.exe" -Destination 'C:\Windows\temp\'
+Copy-Item -ToSession $MYSESSION 'D:\Shares\NetAgent_14.2.0.26967\installer.exe' -Destination 'C:\Windows\temp\'
+
+Enter-PSSession -ComputerName $remotecomputer
+
+cd c:\windows\ccmsetup
+
+#when computer is on metered network run this command to install sccm
+.\ccmsetup.exe /force /AllowMetered SMSMP=[] SMSSITECODE=[]

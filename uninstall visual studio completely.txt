@@ -1,0 +1,46 @@
+Invoke-command -Computername T-MERON25 -scriptblock `
+{$cleanup = test-path "C:\Program Files (x86)\Microsoft Visual Studio\Installer\InstallCleanup.exe"
+
+if ($cleanup -eq "True"){
+
+cmd /c “C:\Program Files (x86)\Microsoft Visual Studio\Installer\InstallCleanup.exe” -f }
+
+$pfx86 = test-path -path "C:\Program Files (x86)\Microsoft Visual Studio"
+
+$pf = test-path -path "C:\Program Files\Microsoft Visual Studio"
+
+$pd =  test-path -path "%programdata%\Microsoft\VisualStudio\Packages"
+
+$ld =  test-path -path "%localappdata%\Microsoft\VisualStudio\Packages"
+
+$reg1 = test-path "HKLM:\SOFTWARE\Policies\Microsoft\VisualStudio\Setup"
+
+$reg2 = test-path "HKLM:\SOFTWARE\Microsoft\VisualStudio\Setup"
+
+$reg3 = test-path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\Setup"
+
+if($pfx86 -eq "True"){
+
+Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio" | remove-item -Recurse -force -Confirm:$false}
+
+
+if($pd -eq "True"){
+ Get-ChildItem "%programdata%\Microsoft\VisualStudio\Packages" | remove-item -Recurse -force -Confirm:$false}
+
+if($ld -eq "True"){
+
+Get-ChildItem "%localappdata%\Microsoft\VisualStudio\Packages" | remove-item -Recurse -force -Confirm:$false}
+
+if($reg1 -eq "True"){
+
+remove-item -path "HKLM:\SOFTWARE\Policies\Microsoft\VisualStudio\Setup" -force -Confirm:$false}
+
+if($reg2 -eq "True"){
+
+remove-item -path "HKLM:\SOFTWARE\Microsoft\VisualStudio\Setup" -force -Confirm:$false}
+
+if($reg3 -eq "True"){
+
+remove-item -path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\Setup" -force -Confirm:$false}
+}
+

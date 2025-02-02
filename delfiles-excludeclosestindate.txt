@@ -1,0 +1,9 @@
+$Directory = "C:\windows\system32\spool"
+
+$givendate = Get-Date
+
+$Closest = Get-ChildItem $Directory -Filter *.cab | Sort {(New-TimeSpan $GivenDate $_.LastWriteTime).Duration()} | Select -First 1 | Select-Object -ExpandProperty Name
+
+$AllFilesExceptClosest = Get-ChildItem $Directory -Filter *.cab | Where-Object { $_.Name -ne $Closest }
+
+$AllFilesExceptClosest | ForEach-Object { Remove-Item "C:\windows\system32\spool\$_" -Force }

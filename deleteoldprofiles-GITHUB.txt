@@ -1,0 +1,2 @@
+Get-WMIObject -class Win32_UserProfile | Where {(! $_.Special) -and (! $_.Loaded) `
+-and ( $_.localpath -ne "C:\users\admin")`
